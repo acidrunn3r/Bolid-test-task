@@ -6,3 +6,8 @@ __pycache__/
 *.env
 venv/
 .env
+
+# Django migrations
+*/migrations/*.py
+*/migrations/*.pyc
+!*/migrations/__init__.py
