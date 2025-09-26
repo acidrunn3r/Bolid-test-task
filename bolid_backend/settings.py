@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sensors.apps.SensorsConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bolid_backend.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+    'MAX_PAGE_SIZE': 100,
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
