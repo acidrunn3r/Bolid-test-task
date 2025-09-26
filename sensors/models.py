@@ -55,8 +55,8 @@ class Event(models.Model):
         verbose_name_plural = 'События'
         indexes = [
             models.Index(fields=['created_at']),
-            models.Index(fields=['sensor']),
-            models.Index(fields=['sensor', 'created_at']),
+            models.Index(fields=['sensor_id']),
+            models.Index(fields=['sensor_id', 'created_at']),
             models.Index(fields=['temperature']),
             models.Index(fields=['humidity'])
         ]
