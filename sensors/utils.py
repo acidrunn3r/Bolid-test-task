@@ -34,6 +34,12 @@ def import_events_from_json(json_file: str):
             if k in model_fields and k not in ["id", "sensor_id"]
         }
 
+        if sensor_id <= 0:
+            failed_events.append(
+                {"sensor_id": sensor_id, "error": "sensor_id должен быть положительным"}
+            )
+            continue
+
         sensor, created = Sensor.objects.get_or_create(
             id=sensor_id, defaults={"name": "N/A", "type": 0}
         )

@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Sensor(models.Model):
-    id = models.IntegerField(primary_key=True, validators=[MinValueValidator(1)])
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(
         max_length=50,
         validators=[
