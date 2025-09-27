@@ -1,9 +1,11 @@
 import json
 import logging
 from pathlib import Path
+
 from sensors.models import Event, Sensor
 
 logger = logging.getLogger(__name__)
+
 
 def import_events_from_json(json_file: str):
     json_path = Path(json_file)
@@ -22,16 +24,23 @@ def import_events_from_json(json_file: str):
         sensor_id = item.get("sensor_id")
         extra_fields = set(item.keys()) - model_fields
         for field in extra_fields:
-            logger.warning(f"Поле '{field}' у события с sensor_id={sensor_id} проигнорировано")
+            logger.warning(
+                f"Поле '{field}' у события с sensor_id={sensor_id} проигнорировано"
+            )
 
-        event_data = {k: v for k, v in item.items() if k in model_fields and k not in ["id", "sensor_id"]}
+        event_data = {
+            k: v
+            for k, v in item.items()
+            if k in model_fields and k not in ["id", "sensor_id"]
+        }
 
         sensor, created = Sensor.objects.get_or_create(
             id=sensor_id, defaults={"name": "N/A", "type": 0}
         )
         if created:
             logger.warning(
-                f"Датчик с sensor_id={sensor_id} ранее не был в базе данных. Присваивается type = 0"
+                f"Датчик с sensor_id={sensor_id} ранее не был в базе данных. "
+                f"Присваивается type = 0"
             )
 
         event = Event(sensor_id=sensor, **event_data)
