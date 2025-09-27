@@ -7,7 +7,7 @@ venv/
 .env
 .venv/
 
-migrations/
+sensors/migrations/
 
 .idea/
 
