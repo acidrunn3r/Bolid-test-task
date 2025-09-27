@@ -1,5 +1,6 @@
-from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 from django.db import models
+
 
 # Create your models here.
 class Sensor(models.Model):
@@ -8,10 +9,13 @@ class Sensor(models.Model):
         max_length=50,
         validators=[
             RegexValidator(
-                regex=r'^[а-яА-Яa-zA-Z0-9\-/]+$',
-                message='Имя датчика может содержать только русские и латинские буквы, цифры, тире и слеш'
+                regex=r"^[а-яА-Яa-zA-Z0-9\-/]+$",
+                message=(
+                    "Имя датчика может содержать только русские и латинские буквы, "
+                    "цифры, тире и слеш"
+                ),
             )
-        ]
+        ],
     )
     type = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(3)])
 
@@ -19,30 +23,35 @@ class Sensor(models.Model):
         return f"Датчик {self.id}: {self.name}."
 
     class Meta:
-        db_table = 'Датчики'
-        verbose_name = 'Датчик'
-        verbose_name_plural = 'Датчики'
+        db_table = "Датчики"
+        verbose_name = "Датчик"
+        verbose_name_plural = "Датчики"
+
 
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
-    sensor_id = models.ForeignKey(Sensor, related_name="events", on_delete=models.CASCADE)
+    sensor_id = models.ForeignKey(
+        Sensor, related_name="events", on_delete=models.CASCADE
+    )
     name = models.CharField(
         max_length=50,
         validators=[
             RegexValidator(
-                regex=r'^([а-яА-Яa-zA-Z0-9_]+|N/A)?$',
-                message='Название события может содержать только русские и латинские буквы, цифры, _,  и N/A.'
+                regex=r"^([а-яА-Яa-zA-Z0-9_]+|N/A)?$",
+                message=(
+                    "Название события может содержать только русские и латинские буквы,"
+                    " цифры, _,  и N/A."
+                ),
             )
-        ])
+        ],
+    )
     temperature = models.FloatField(
         validators=[MinValueValidator(-273.15), MaxValueValidator(5499.0)],
         null=True,
-        blank=True
+        blank=True,
     )
     humidity = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
-        null=True,
-        blank=True
+        validators=[MinValueValidator(0), MaxValueValidator(100)], null=True, blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -50,13 +59,13 @@ class Event(models.Model):
         return f"Событие {self.id}: {self.name} от датчика {self.sensor_id.id}."
 
     class Meta:
-        db_table = 'События'
-        verbose_name = 'Событие'
-        verbose_name_plural = 'События'
+        db_table = "События"
+        verbose_name = "Событие"
+        verbose_name_plural = "События"
         indexes = [
-            models.Index(fields=['created_at']),
-            models.Index(fields=['sensor_id']),
-            models.Index(fields=['sensor_id', 'created_at']),
-            models.Index(fields=['temperature']),
-            models.Index(fields=['humidity'])
+            models.Index(fields=["created_at"]),
+            models.Index(fields=["sensor_id"]),
+            models.Index(fields=["sensor_id", "created_at"]),
+            models.Index(fields=["temperature"]),
+            models.Index(fields=["humidity"]),
         ]

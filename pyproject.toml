@@ -1,0 +1,12 @@
+[tool.isort]
+profile = "black"
+known_first_party = ["sensors", "bolid_backend"]
+line_length = 91
+[tool.black]
+line-length = 91
+exclude = '''
+/(
+    migrations
+  | .venv
+)/
+'''
