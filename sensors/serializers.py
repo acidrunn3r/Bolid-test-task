@@ -26,3 +26,7 @@ class EventSerializer(serializers.ModelSerializer):
             "humidity",
             "id",
         )
+
+
+class UploadJSONSerializer(serializers.Serializer):
+    file = serializers.FileField()
