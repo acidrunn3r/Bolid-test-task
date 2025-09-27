@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sensors.apps.SensorsConfig',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,
     'MAX_PAGE_SIZE': 100,
+    "DEFAULT_VERSION": "v1",
+    "ALLOWED_VERSIONS": ["v1",],
 }
 
 # Database
