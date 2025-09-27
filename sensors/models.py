@@ -2,7 +2,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator, RegexVa
 from django.db import models
 
 
-# Create your models here.
 class Sensor(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(
@@ -30,9 +29,7 @@ class Sensor(models.Model):
 
 class Event(models.Model):
     id = models.AutoField(primary_key=True)
-    sensor_id = models.ForeignKey(
-        Sensor, related_name="events", on_delete=models.CASCADE
-    )
+    sensor_id = models.ForeignKey(Sensor, related_name="events", on_delete=models.CASCADE)
     name = models.CharField(
         max_length=50,
         validators=[

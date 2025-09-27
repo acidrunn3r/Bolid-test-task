@@ -26,9 +26,7 @@ class EventFilter(FilterSet):
         temp_min = self.data.get("temperature_min")
         temp_max = self.data.get("temperature_max")
         if temp_min and temp_max and float(temp_max) < float(temp_min):
-            raise ValidationError(
-                "temperature_max не может быть меньше temperature_min"
-            )
+            raise ValidationError("temperature_max не может быть меньше temperature_min")
         humi_min = self.data.get("humidity_min")
         humi_max = self.data.get("humidity_max")
         if humi_min and humi_max and float(humi_max) < float(humi_min):
