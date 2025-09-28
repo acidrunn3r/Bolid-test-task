@@ -6,7 +6,5 @@ __pycache__/
 venv/
 .env
 .venv/
-
-sensors/migrations/
-
 .idea/
+staticfiles/
