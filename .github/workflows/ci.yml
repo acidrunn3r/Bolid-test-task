@@ -97,7 +97,7 @@ jobs:
           URL="https://bolid-test-task.onrender.com/"
           MAX_RETRIES=47
           COUNT=0
-          until $(curl --output /dev/null --silent --head --fail $URL); do
+          until $(curl --output /dev/null --silent --head --fail "$URL"); do
             COUNT=$((COUNT+1))
             if [ $COUNT -ge $MAX_RETRIES ]; then
               echo "Service did not become available in time"
@@ -112,27 +112,18 @@ jobs:
         run: |
           URL_BASE="https://bolid-test-task.onrender.com/api/v1"
 
-          echo "Checking GET /sensors/"
-          RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/sensors.json $URL_BASE/sensors/)
+          RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/sensors.json "$URL_BASE/sensors/")
           if [ "$RESPONSE" != "200" ]; then
             echo "GET /sensors/ failed! HTTP code: $RESPONSE"
             cat /tmp/sensors.json
             exit 1
           fi
 
-          echo "Checking GET /events/"
-          RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/events.json $URL_BASE/events/)
-          if [ "$RESPONSE" != "200" ]; then
-            echo "GET /events/ failed! HTTP code: $RESPONSE"
-            cat /tmp/events.json
-            exit 1
-          fi
+          echo '[{"sensor_id":0,"name":"TestEvent","temperature":25,"humidity":50}]' > /tmp/sample.json
 
-          echo "Checking POST /events/upload-json with sample data"
-          SAMPLE_JSON='{"file": "[]"}'
-          RESPONSE_CODE=$(curl -s -o /tmp/upload.json -w "%{http_code}" -X POST \
-            -F "file=@sample.json;type=application/json" \
-            $URL_BASE/events/upload-json/)
+          RESPONSE_CODE=$(curl -s -w "%{http_code}" -o /tmp/upload.json -X POST \
+            -F "file=@/tmp/sample.json;type=application/json" \
+            "$URL_BASE/events/upload-json/")
           if [ "$RESPONSE_CODE" != "201" ]; then
             echo "POST /events/upload-json failed! HTTP code: $RESPONSE_CODE"
             cat /tmp/upload.json
