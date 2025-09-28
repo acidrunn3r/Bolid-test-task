@@ -25,13 +25,12 @@ jobs:
     services:
       postgres:
         image: postgres:17
+        env:
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U $DB_USER -d $DB_NAME"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -52,9 +51,11 @@ jobs:
 
       - name: Wait for Postgres
         run: |
+          echo "Waiting for PostgreSQL to be ready..."
           until pg_isready -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME; do
             sleep 1
           done
+          echo "PostgreSQL is ready!"
 
       - name: Check migrations
         run: python manage.py makemigrations --check --dry-run
