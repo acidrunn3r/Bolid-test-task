@@ -31,6 +31,7 @@ API позволяет:
 - PostgreSQL
 - Swagger
 - Docker
+- GitHub Actions
 ---
 
 ## Установка и запуск
@@ -57,9 +58,9 @@ pip install -r requirements.txt
 Создать базу данных и пользователя в PostgreSQL:
 
 ```sql
-CREATE DATABASE bolid_db;
-CREATE USER postgres WITH PASSWORD 'pass123';
-GRANT ALL PRIVILEGES ON DATABASE bolid_db TO postgres;
+CREATE DATABASE <Название ДБ>;
+CREATE USER <Ваш юзернейм> WITH PASSWORD <'Ваш пароль'>;
+GRANT ALL PRIVILEGES ON DATABASE <Название ДБ> TO <Ваш юзернейм>;
 ```
 
 
@@ -269,7 +270,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/events/upload-json/ \
 ## Swagger
 
 Интерактивная документация по API доступна через Swagger UI:
-[http://127.0.0.1:8000/swagger/](http://127.0.0.1:8000/swagger/)
+[http://127.0.0.1:8000/swagger/](http://127.0.0.1:8000/swagger/) или http://localhost:8000/swagger/
 
 
 ### Возможности
@@ -327,7 +328,8 @@ python manage.py test
 ```
 *Все тесты написаны с использованием `django.test.TestCase` и `rest_framework.test.APIClient` и покрывают модели, API и функциональность загрузки JSON.*
 ___
-## Continuous Integration (CI)
+## CI/CD
+### Continuous Integration (CI)
 
 Проект настроен для автоматического тестирования через **GitHub Actions**.  
 
@@ -335,15 +337,31 @@ ___
 
 1. Поднимает контейнер **PostgreSQL** для тестовой базы.
 2. Устанавливает Python-зависимости.
+   > Для ускорения сборки используется **кэш pip**, который сохраняет установленные пакеты между запусками workflow. Это позволяет не скачивать все зависимости заново при каждом пуше.
 3. Проверяет код на стиль с помощью `flake8`.
 4. Применяет миграции и проверяет их корректность.
 5. Запускает все **Django-тесты**.
 6. Проверяет статические файлы (`collectstatic`).
 7. Строит Docker-образ для тестового окружения.
- 
+   > Для ускорения сборки используется **кэш Docker-слоёв**.
 > `DJANGO_SECRET_KEY`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` заданы в Secrets в GItHub Actions
 
 Таким образом, проект автоматически проверяется на работоспособность после каждого изменения.
+### Continuous Delivery (CD)
+
+Проект настроен на автоматический деплой на **Render** после успешного прохождения CI:
+
+1. После успешного выполнения workflow `Django CI` запускается шаг **Trigger Render Deploy**.
+2. GitHub Actions отправляет запрос к API Render для создания нового деплоя.
+3. Render поднимает контейнер с приложением, применяет миграции и собирает статические файлы (через `entrypoint.sh`).
+4. Сайт становится доступен по публичному [URL](https://bolid-test-task.onrender.com).
+
+> Для CD используются следующие Secrets в GitHub Actions:
+>
+> * `RENDER_API_KEY` — API-ключ Render
+> * `RENDER_SERVICE_ID` — ID сервиса Render
+
+Таким образом, каждое изменение в ветке `main` после успешных тестов автоматически деплоится на продакшн, минимизируя ручные действия.
 
 ---
 ## Логи
