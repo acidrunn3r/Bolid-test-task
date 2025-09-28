@@ -1,0 +1,8 @@
+[
+  {
+    "sensor_id": 1,
+    "name": "TestEvent",
+    "temperature": 25,
+    "humidity": 50
+  }
+]
