@@ -72,7 +72,7 @@ jobs:
       - name: Build Docker image
         run: docker build -t bolid-backend-ci .
 
-deploy:
+  deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
 
