@@ -91,3 +91,19 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -d '' \
             https://api.render.com/v1/services/${{ secrets.RENDER_SERVICE_ID }}/deploys
+
+      - name: Wait for service to be live
+        run: |
+          URL="https://bolid-test-task.onrender.com/"
+          MAX_RETRIES=47
+          COUNT=0
+          until $(curl --output /dev/null --silent --head --fail $URL); do
+            COUNT=$((COUNT+1))
+            if [ $COUNT -ge $MAX_RETRIES ]; then
+              echo "Service did not become available in time"
+              exit 1
+            fi
+            echo "Waiting for service to be ready... ($COUNT/$MAX_RETRIES)"
+            sleep 15
+          done
+          echo "Service is up and running!"
