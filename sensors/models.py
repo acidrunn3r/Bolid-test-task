@@ -49,21 +49,23 @@ class Event(models.Model):
     Поля:
     - id: первичный ключ, автоинкремент.
     - sensor_id: внешний ключ на Sensor.
-    - name: название события, только русские/латинские буквы, цифры, '_' и N/A.
+    - name: название события, только русские/латинские буквы, цифры, '_', N/A, может быть пустым.
     - temperature: температура, float, от -273.15 до 5499.0, может быть пустым.
-    - humidity: влажность, float, от 0 до 100, может быть пустым.
+    - humidity: влажность, float, от 0 до 100, может быть пустой.
     - created_at: дата и время создания события, автоматически.
     """
 
     id = models.AutoField(primary_key=True, help_text="ID события, автоинкремент")
     sensor_id = models.ForeignKey(
-        Sensor,
+        "Sensor",
         related_name="events",
         on_delete=models.CASCADE,
         help_text="Сенсор, которому принадлежит событие",
     )
     name = models.CharField(
         max_length=50,
+        blank=True,  # разрешает оставлять пустым в формах и сериализаторах
+        null=True,   # разрешает хранить NULL в базе данных
         validators=[
             RegexValidator(
                 regex=r"^([а-яА-Яa-zA-Z0-9_]+|N/A)?$",
@@ -92,7 +94,7 @@ class Event(models.Model):
     )
 
     def __str__(self):
-        return f"Событие {self.id}: {self.name} от датчика {self.sensor_id.id}."
+        return f"Событие {self.id}: {self.name or 'N/A'} от датчика {self.sensor_id.id}."
 
     class Meta:
         db_table = "События"
