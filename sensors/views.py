@@ -62,7 +62,8 @@ class EventViewSet(viewsets.ModelViewSet):
                         "imported_count": len(imported_ids.get("imported", [])),
                         "imported_events": imported_ids,
                         "message": "Импорт завершён успешно.",
-                    }
+                    },
+                    status=status.HTTP_201_CREATED,
                 )
             except Exception as e:
                 return Response(
