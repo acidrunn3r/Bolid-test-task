@@ -5,6 +5,7 @@ __pycache__/
 *.swp
 venv/
 .env
+.env.docker
 .venv/
 .idea/
 staticfiles/

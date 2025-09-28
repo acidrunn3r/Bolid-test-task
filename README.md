@@ -52,6 +52,16 @@ source .venv/bin/activate  # Linux / macOS
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
+Создаем .env файл в корне проекта
+```env
+SECRET_KEY=django-insecure-...
+DEBUG=1
+DB_NAME=bolid_db
+DB_USER=postgres
+DB_PASSWORD=pass123
+DB_HOST=localhost
+DB_PORT=5432
+```
 
 ### 3. Настройка PostgreSQL
 
@@ -107,6 +117,16 @@ http://127.0.0.1:8000/admin/
 ```bash
 git clone https://github.com/acidrunn3r/Bolid-test-task
 cd bolid_backend
+```
+Создаем .env.docker файл в корне проекта
+```env
+SECRET_KEY=django-insecure-...
+DEBUG=1
+DB_NAME=bolid_db
+DB_USER=postgres
+DB_PASSWORD=pass123
+DB_HOST=db
+DB_PORT=5432
 ```
 
 2. Собираем образы и запускаем контейнеры:
