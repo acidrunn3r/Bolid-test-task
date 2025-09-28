@@ -11,3 +11,4 @@ PyYAML==6.0.3
 sqlparse==0.5.3
 gunicorn
 whitenoise
+flake8
