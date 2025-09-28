@@ -327,6 +327,25 @@ python manage.py test
 ```
 *Все тесты написаны с использованием `django.test.TestCase` и `rest_framework.test.APIClient` и покрывают модели, API и функциональность загрузки JSON.*
 ___
+## Continuous Integration (CI)
+
+Проект настроен для автоматического тестирования через **GitHub Actions**.  
+
+Каждый пуш или pull request в ветку `main` запускает workflow `Django CI`, который выполняет следующие шаги:
+
+1. Поднимает контейнер **PostgreSQL** для тестовой базы.
+2. Устанавливает Python-зависимости.
+3. Проверяет код на стиль с помощью `flake8`.
+4. Применяет миграции и проверяет их корректность.
+5. Запускает все **Django-тесты**.
+6. Проверяет статические файлы (`collectstatic`).
+7. Строит Docker-образ для тестового окружения.
+ 
+> `DJANGO_SECRET_KEY`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` заданы в Secrets в GItHub Actions
+
+Таким образом, проект автоматически проверяется на работоспособность после каждого изменения.
+
+---
 ## Логи
 
 * Все предупреждения и ошибки при импорте JSON логируются через `logging`.
@@ -344,6 +363,9 @@ ___
 ## Структура проекта
 
 ```
+├── .githubs
+│   └── workflows
+│       └── ci.yml
 ├── Dockerfile
 ├── .flake8
 ├── .gitignore
@@ -359,12 +381,15 @@ ___
 ├── manage.py
 ├── pyproject.toml
 ├── requirements.txt
-├── sensors
+└── sensors
     ├── __init__.py
     ├── admin.py
     ├── apps.py
     ├── filters.py
     ├── migrations
+    │   ├── 0001_initial.py
+    │   ├── 0002_alter_event_created_at_alter_event_humidity_and_more.py
+    │   └── __init__.py
     ├── models.py
     ├── serializers.py
     ├── tests.py
@@ -381,7 +406,7 @@ ___
 ___
 ## Планируемые улучшения
 
-* CI/CD через GitHub Actions
+* CD через GitHub Actions
 
 ---
 
