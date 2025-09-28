@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 echo "Waiting for database..."
 while ! python - <<END
@@ -8,7 +9,7 @@ try:
         dbname=os.getenv("DB_NAME"),
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD"),
-        host="db"
+        host=os.getenv("DB_HOST")
     )
     conn.close()
 except:
@@ -19,7 +20,8 @@ do
 done
 
 echo "Database ready. Applying migrations and collecting static..."
-python manage.py migrate
+python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
-exec gunicorn bolid_backend.wsgi:application --bind 0.0.0.0:8000
+echo "Starting Gunicorn..."
+exec gunicorn bolid_backend.wsgi:application --bind 0.0.0.0:${PORT:-8000}
