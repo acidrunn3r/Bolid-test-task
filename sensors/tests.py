@@ -18,7 +18,6 @@ class SensorModelTest(TestCase):
         self.assertEqual(sensor.type, 1)
 
     def test_sensor_name_validator(self):
-        # Проверяем валидатор имени (недопустимые символы)
         with self.assertRaises(ValidationError):
             sensor = Sensor(id=1, name="Bad#Name", type=1)
             sensor.full_clean()
