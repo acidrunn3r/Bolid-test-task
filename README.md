@@ -411,6 +411,7 @@ ___
     ├── migrations
     │   ├── 0001_initial.py
     │   ├── 0002_alter_event_created_at_alter_event_humidity_and_more.py
+    │   ├── 0003_alter_event_name.py 
     │   └── __init__.py
     ├── models.py
     ├── serializers.py
