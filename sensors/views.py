@@ -1,8 +1,12 @@
 import tempfile
 
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
+
+# from rest_framework.renderers import JSONRenderer # Fix? for 405 error
 from rest_framework.response import Response
 
 from .filters import EventFilter
@@ -27,7 +31,20 @@ class EventViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at"]
     ordering = ["-created_at"]
 
-    @action(detail=False, methods=["post"], url_path="upload-json")
+    parser_classes = [MultiPartParser]
+
+    @swagger_auto_schema(
+        operation_description="Импорт событий из JSON-файла",
+        method="post",
+        request_body=UploadJSONSerializer,
+        responses={200: "Успешный импорт", 400: "Ошибка при импорте"},
+    )
+    @action(
+        detail=False,
+        methods=["post"],
+        url_path="upload-json",
+        # renderer_classes=[JSONRenderer] # Fix? for 405 error
+    )
     def upload_json(self, request, *args, **kwargs):
         serializer = UploadJSONSerializer(data=request.data)
         if serializer.is_valid():
@@ -42,7 +59,7 @@ class EventViewSet(viewsets.ModelViewSet):
                 return Response(
                     {
                         "status": "ok",
-                        "imported_count": len(imported_ids),
+                        "imported_count": len(imported_ids.get("imported", [])),
                         "imported_events": imported_ids,
                         "message": "Импорт завершён успешно.",
                     }
@@ -52,5 +69,4 @@ class EventViewSet(viewsets.ModelViewSet):
                     {"status": "error", "message": str(e)},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
