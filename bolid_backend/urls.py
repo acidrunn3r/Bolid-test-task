@@ -42,4 +42,9 @@ urlpatterns = [
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path("api-auth/", include("rest_framework.urls")),
+    path(
+        "accounts/logout/",
+        RedirectView.as_view(url="/api-auth/logout/?next=/swagger/", permanent=False),
+        name="logout-redirect",
+    ),
 ]
