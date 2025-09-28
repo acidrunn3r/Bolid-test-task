@@ -29,8 +29,8 @@ API позволяет:
 - Django 4.2
 - Django REST Framework
 - PostgreSQL
-- django-filter
-
+- Swagger
+- Docker
 ---
 
 ## Установка и запуск
@@ -92,6 +92,69 @@ http://127.0.0.1:8000/api/v1/
 
 http://127.0.0.1:8000/admin/
 
+
+---
+## Запуск через Docker
+
+Проект полностью готов к запуску в Docker. Используется `docker-compose` для поднятия контейнеров Django + PostgreSQL.
+
+
+### 1. Сборка и запуск
+
+1. Клонируем репозиторий:
+
+```bash
+git clone https://github.com/acidrunn3r/Bolid-test-task
+cd bolid_backend
+```
+
+2. Собираем образы и запускаем контейнеры:
+
+```bash
+docker-compose up --build -d
+```
+
+* Флаг `--build` пересобирает контейнеры при изменениях.
+* Флаг `-d` запускает в фоне.
+
+3. Проверяем статус контейнеров:
+
+```bash
+docker-compose ps
+```
+
+---
+
+### 2. Настройка Django
+Миграции и статика собираются автоматически посредтсвом entrypoint.sh
+
+**Создание суперпользователя:**
+
+```bash
+docker-compose exec web python manage.py createsuperuser
+```
+---
+
+### 3. Доступ к сервисам
+
+* Django API: [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/)
+* Админка: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+
+> Контейнер PostgreSQL слушает на `db:5432`. В `docker-compose.yml` уже настроены переменные окружения для базы данных.
+
+---
+
+### 4. Остановка и удаление
+
+```bash
+docker-compose down
+```
+
+* Для очистки данных базы — добавить флаг `-v`:
+
+```bash
+docker-compose down -v
+```
 
 ---
 
@@ -281,6 +344,7 @@ ___
 ## Структура проекта
 
 ```
+├── Dockerfile
 ├── .flake8
 ├── .gitignore
 ├── README.md
@@ -290,20 +354,22 @@ ___
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
+├── docker-compose.yml
+├── entrypoint.sh
 ├── manage.py
 ├── pyproject.toml
 ├── requirements.txt
-└── sensors
-    ├── __init__.py
-    ├── admin.py
-    ├── apps.py
-    ├── filters.py
-    ├── models.py
-    ├── serializers.py
-    ├── tests.py
-    ├── utils.py
-    └── views.py
-
+├── sensors
+    ├── __init__.py
+    ├── admin.py
+    ├── apps.py
+    ├── filters.py
+    ├── migrations
+    ├── models.py
+    ├── serializers.py
+    ├── tests.py
+    ├── utils.py
+    └── views.py
 ```
 
 ---
@@ -315,7 +381,6 @@ ___
 ___
 ## Планируемые улучшения
 
-* Запуск проекта через Docker 
 * CI/CD через GitHub Actions
 
 ---
